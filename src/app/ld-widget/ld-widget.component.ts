@@ -18,8 +18,6 @@ export class LdWidgetComponent {
   constructor(private http: HttpClient) { }
 
   @Input() sparqlTemplate = ``;
-  @Input() prefix = '';
-  @Input() suffix = '';
   @Input() endpoint = '';
 
   result: string[] = [];
@@ -63,6 +61,7 @@ export class LdWidgetComponent {
       .set('Accept', 'application/sparql-results+json');
 
     this.error = '';
+
     this.http
       .post<ResultTable>(this.endpoint, body.toString(), {
         headers,
@@ -97,12 +96,12 @@ export class LdWidgetComponent {
           this.error = JSON.stringify(error, null, 4);
         }
       );
+
+    
   }
 
   getValues(variable: SafeSparqlValue): string {
-    const prefix = this._escapeSparql(this.prefix ?? '');
-    const suffix = this._escapeSparql(this.suffix ?? '');
-    return `VALUES ( ?prefix ?var ?suffix) { ('${prefix}' '${variable}' '${suffix}') }`;
+    return `VALUES ?varBind { '${variable}' }`;
   }
 
   private _escapeSparql(input: string): SafeSparqlValue {

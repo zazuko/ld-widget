@@ -17,24 +17,8 @@ import { LdWidgetComponent } from '../ld-widget/ld-widget.component';
 export class WidgetComponent {
 
   error: string | null = null;
-  sparqlTemplate = `
-    PREFIX schema: <http://schema.org/>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-  
-    SELECT $prefix ?result $suffix
-    WHERE {
-    ?canton a <https://schema.ld.admin.ch/Canton> ;
-            schema:alternateName ?var;
-            schema:name ?result .
-      FILTER(langMatches(lang(?result), 'de'))
-    }
-  
-    `;
-  prefix = 'Kanton';
-  suffix = 'cool';
-  endpoint = 'https://lindas.admin.ch/query';
-  targetClass = '';
+  sparqlQuery = '';
+  endpoint = '';
 
 
   constructor(private route: ActivatedRoute) { }
@@ -42,13 +26,11 @@ export class WidgetComponent {
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
       this.error = null;
-      this.endpoint = params.get('endpoint') ?? '';
-      this.prefix = params.get('prefix') ?? '';
-      this.suffix = params.get('suffix') ?? '';
-      this.targetClass = params.get('targetClass') ?? '';
-
-      if (this.endpoint.length < 1 || this.targetClass.length < 1) {
-        this.error = `Not enough information to proceed: ${this.endpoint.length === 0 ? '\nendpoint missing' : ''} ${this.targetClass.length === 0 ? '\ntargetClass missing' : ''}`;
+      this.endpoint = params.get('e') ?? '';
+      this.sparqlQuery = params.get('q') ?? '';
+     
+      if (this.endpoint.length < 1 || this.sparqlQuery.length < 1) {
+        this.error = `Not enough information to proceed: ${this.endpoint.length === 0 ? '\nendpoint missing' : ''} ${this.sparqlQuery.length === 0 ? '\nsparql query missing' : ''}`;
       }
     });
   }

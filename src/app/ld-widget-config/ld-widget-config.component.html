@@ -1,0 +1,21 @@
+<h1>Linked Data Widget: Link Configurator</h1>
+<div>
+    <p>Test link</p>
+    <div *ngIf="isLinkValid">
+        <a [href]="link" _blank>{{link}}</a>
+    </div>
+    <div *ngIf="!isLinkValid">
+        <p>{{link}}</p>
+    </div>
+</div>
+
+<form [formGroup]="widgetConfigForm">
+    <div>
+        <label for="endpoint">SPARQL Endpoint</label>
+        <input id="endpoint" type="text" formControlName="endpoint" style="margin-right: 4px" />
+    </div>
+    <div>
+        <label for="query">SPARQL Query</label>
+        <textarea id="query" formControlName="query" style="margin-right: 4px"></textarea>
+    </div>
+</form>
