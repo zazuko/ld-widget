@@ -4,6 +4,19 @@ LD Widget will be a generic Widget for simple queries.
 Right now it's still very experimental.
 
 # Data 
+```sparql
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?resultString FROM <https://lindas.admin.ch/fsvo/rabies> WHERE {
+  ?s <https://agriculture.ld.admin.ch/foen/rabies/identifier> ?varBind;
+  	 <https://agriculture.ld.admin.ch/foen/rabies/quantitativeresult> ?value ;
+     <https://agriculture.ld.admin.ch/foen/rabies/result> ?result ;
+     <https://agriculture.ld.admin.ch/foen/rabies/date> ?date;
+  	 <https://agriculture.ld.admin.ch/foen/rabies/unitcode> ?unit .
+     BIND ( IF ( ?result = <https://agriculture.ld.admin.ch/foen/rabies/dimension/result/positiv>, "Positive", "Negative" ) AS ?v )
+  	 BIND(CONCAT(?v, " | ",  "Quantitative Result: ", str(?value), " ", ?unit, " | ", str(?date))  AS ?resultString ) 
+} ORDER BY ?date LIMIT 1
+
 
 TEST 990000002998969
 
