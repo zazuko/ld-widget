@@ -17,6 +17,7 @@ import { LdWidgetComponent } from '../ld-widget/ld-widget.component';
 export class WidgetComponent {
 
   error: string | null = null;
+
   sparqlQuery = '';
   endpoint = '';
 
@@ -28,6 +29,10 @@ export class WidgetComponent {
       this.error = null;
       this.endpoint = params.get('e') ?? '';
       this.sparqlQuery = params.get('q') ?? '';
+
+      console.log('GET FROM ROUTER')
+      console.log(this.endpoint)
+      console.log(this.sparqlQuery)
      
       if (this.endpoint.length < 1 || this.sparqlQuery.length < 1) {
         this.error = `Not enough information to proceed: ${this.endpoint.length === 0 ? '\nendpoint missing' : ''} ${this.sparqlQuery.length === 0 ? '\nsparql query missing' : ''}`;
