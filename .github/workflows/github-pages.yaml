@@ -32,6 +32,9 @@ jobs:
       - name: Configure CNAME
         run: echo ld-widget.zazuko.com > dist/ld-widget/CNAME
 
+      - name: Configure 404 page
+        run: cp dist/ld-widget/index.html dist/ld-widget/404.html
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
