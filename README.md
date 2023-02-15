@@ -14,9 +14,8 @@ SELECT ?resultString FROM <https://lindas.admin.ch/fsvo/rabies> WHERE {
      <https://agriculture.ld.admin.ch/foen/rabies/date> ?date;
   	 <https://agriculture.ld.admin.ch/foen/rabies/unitcode> ?unit .
      BIND ( IF ( ?result = <https://agriculture.ld.admin.ch/foen/rabies/dimension/result/positiv>, "Sufficient", "Insufficient" ) AS ?v )
-  	 BIND(CONCAT(?v, " | ",  "Quantitative Result: ", str(?value), " ", ?unit, " | Date of blood sampling: ", str(?date))  AS ?resultString ) 
+  	 BIND(CONCAT("Microchip number: ",?varBind, " | ", ?v, " | ",  "Quantitative Result: ", str(?value), " ", ?unit, " | Date of blood sampling: ", str(?date))  AS ?resultString ) 
 } ORDER BY ?date LIMIT 1
-
 
 TEST 990000002998969
 
