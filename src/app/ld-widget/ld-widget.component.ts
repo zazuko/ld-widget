@@ -67,11 +67,10 @@ export class LdWidgetComponent {
         headers,
         observe: 'response',
       })
-      .subscribe(
-        (response) => {
+      .subscribe({
+        next: (response) => {
           const contentType = response.headers.get('Content-Type');
-
-          if (contentType !== 'application/sparql-results+json') {
+          if (!contentType?.startsWith('application/sparql-results+json')) {
             // this can happen because stardog is returning a http 200 ok on sparql error
             this.result = [];
             this.error = JSON.stringify(response, null, 4);
@@ -90,14 +89,13 @@ export class LdWidgetComponent {
             }) ?? [];
           this.result = table.map((row) => row.join(' '));
         },
-        (error) => {
+        error: (error) => {
           // this can happen because stardog is returning a http 200 ok on sparql error
           this.result = [];
           this.error = JSON.stringify(error, null, 4);
         }
+      }
       );
-
-    
   }
 
   getValues(variable: SafeSparqlValue): string {
