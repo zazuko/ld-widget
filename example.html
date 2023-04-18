@@ -16,9 +16,18 @@
 </head>
 
 <body>
-    <h1>LdWidget Example</h1>
+    <h1>Beispiel</h1>
+    <p>In diesem Beispiel wird das LdWidget in einem Iframe eingebettet, der auf die URL des Widgets verweist. Der
+        Iframe wird eine Breite von 100% zugewiesen, die je nach Anforderungen angepasst
+        werden kann.</p>
+    <hr>
+    <p>Zum Testen kann man die Nummer: <mark>990000002998969</mark> verwenden.</p>
+    <a target="_blank" href="https://github.com/zazuko/ld-widget/blob/main/src/example.html">Beispile Source Code</a>.
+    </p>
+    <hr>
+    <h1>LdWidget</h1>
     <iframe
-        src="/?e=https%3A%2F%2Fld.zazuko.com%2Fquery%2F&q=PREFIX%20rdf%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0ASELECT%20%3FresultString%20FROM%20%3Chttps%3A%2F%2Flindas.admin.ch%2Ffsvo%2Frabies%3E%20WHERE%20%7B%0A%20%20%3Fs%20%3Chttps%3A%2F%2Fagriculture.ld.admin.ch%2Ffoen%2Frabies%2Fidentifier%3E%20%3FvarBind%3B%0A%20%20%09%20%3Chttps%3A%2F%2Fagriculture.ld.admin.ch%2Ffoen%2Frabies%2Fquantitativeresult%3E%20%3Fvalue%20%3B%0A%20%20%20%20%20%3Chttps%3A%2F%2Fagriculture.ld.admin.ch%2Ffoen%2Frabies%2Fresult%3E%20%3Fresult%20%3B%0A%20%20%20%20%20%3Chttps%3A%2F%2Fagriculture.ld.admin.ch%2Ffoen%2Frabies%2Fdate%3E%20%3Fdate%3B%0A%20%20%09%20%3Chttps%3A%2F%2Fagriculture.ld.admin.ch%2Ffoen%2Frabies%2Funitcode%3E%20%3Funit%20.%0A%20%20%20%20%20BIND%20(%20IF%20(%20%3Fresult%20%3D%20%3Chttps%3A%2F%2Fagriculture.ld.admin.ch%2Ffoen%2Frabies%2Fdimension%2Fresult%2Fpositiv%3E%2C%20%22Sufficient%22%2C%20%22Insufficient%22%20)%20AS%20%3Fv%20)%0A%20%20%09%20BIND(CONCAT(%22Microchip%20number%3A%20%22%2C%3FvarBind%2C%20%22%20%7C%20%22%2C%20%3Fv%2C%20%22%20%7C%20%22%2C%20%20%22Quantitative%20Result%3A%20%22%2C%20str(%3Fvalue)%2C%20%22%20%22%2C%20%3Funit%2C%20%22%20%7C%20Date%20of%20blood%20sampling%3A%20%22%2C%20str(%3Fdate))%20%20AS%20%3FresultString%20)%20%0A%7D%20ORDER%20BY%20%3Fdate%20LIMIT%201%0A"
+        src="https://widget.lindas.admin.ch/?e=https%3A%2F%2Fld.zazuko.com%2Fquery%2F&q=PREFIX%20rdf%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0ASELECT%20%3FresultString%20FROM%20%3Chttps%3A%2F%2Flindas.admin.ch%2Ffsvo%2Frabies%3E%20WHERE%20%7B%0A%20%20%3Fs%20%3Chttps%3A%2F%2Fagriculture.ld.admin.ch%2Ffoen%2Frabies%2Fidentifier%3E%20%3FvarBind%3B%0A%20%20%09%20%3Chttps%3A%2F%2Fagriculture.ld.admin.ch%2Ffoen%2Frabies%2Fquantitativeresult%3E%20%3Fvalue%20%3B%0A%20%20%20%20%20%3Chttps%3A%2F%2Fagriculture.ld.admin.ch%2Ffoen%2Frabies%2Fresult%3E%20%3Fresult%20%3B%0A%20%20%20%20%20%3Chttps%3A%2F%2Fagriculture.ld.admin.ch%2Ffoen%2Frabies%2Fdate%3E%20%3Fdate%3B%0A%20%20%09%20%3Chttps%3A%2F%2Fagriculture.ld.admin.ch%2Ffoen%2Frabies%2Funitcode%3E%20%3Funit%20.%0A%20%20%20%20%20BIND%20(%20IF%20(%20%3Fresult%20%3D%20%3Chttps%3A%2F%2Fagriculture.ld.admin.ch%2Ffoen%2Frabies%2Fdimension%2Fresult%2Fpositiv%3E%2C%20%22Sufficient%22%2C%20%22Insufficient%22%20)%20AS%20%3Fv%20)%0A%20%20%09%20BIND(CONCAT(%22Microchip%20number%3A%20%22%2C%3FvarBind%2C%20%22%20%7C%20%22%2C%20%3Fv%2C%20%22%20%7C%20%22%2C%20%20%22Quantitative%20Result%3A%20%22%2C%20str(%3Fvalue)%2C%20%22%20%22%2C%20%3Funit%2C%20%22%20%7C%20Date%20of%20blood%20sampling%3A%20%22%2C%20str(%3Fdate))%20%20AS%20%3FresultString%20)%20%0A%7D%20ORDER%20BY%20%3Fdate%20LIMIT%201%0A"
         title="LdWidget Example"></iframe>
     <h3>
         Erklärung:
