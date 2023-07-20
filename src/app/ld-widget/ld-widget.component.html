@@ -1,20 +1,14 @@
-
 <form [formGroup]="sparqlVariableForm" (ngSubmit)="onSubmit()">
-    <label for="name"></label>
-    <input
-      id="name"
-      type="text"
-      formControlName="variable"
-      style="margin-right: 4px"
-    />
-    <button type="submit" [disabled]="!sparqlVariableForm.valid">Suche</button>
-  </form>
-  <div *ngIf="error.length === 0">
-    <p *ngFor="let line of result">{{ line }}</p>
-    <p *ngIf="result.length === 0">0 results</p>
-  </div>
-  
-  <div *ngIf="error.length > 0" style="color: red">
-    <h4>Http Response Error</h4>
-    <pre>{{ error }}</pre>
-  </div>
+  <label for="name"></label>
+  <input id="name" type="text" formControlName="variable" style="margin-right: 4px" autocomplete="on" />
+  <button type="submit" [disabled]="!sparqlVariableForm.valid">Suche</button>
+</form>
+<div *ngIf="error.length === 0">
+  <p *ngFor="let line of result">{{ line }}</p>
+  <p *ngIf="result.length === 0">0 results</p>
+</div>
+
+<div *ngIf="error.length > 0" style="color: red">
+  <h4>Http Response Error</h4>
+  <pre>{{ error }}</pre>
+</div>
