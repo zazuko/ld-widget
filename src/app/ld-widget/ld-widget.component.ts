@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { HttpClient, HttpClientModule, HttpHeaders, HttpParams } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
@@ -14,14 +14,21 @@ interface SafeSparqlValue extends SafeValue { }
   templateUrl: './ld-widget.component.html',
   styleUrls: ['ld-widget.component.scss'],
 })
-export class LdWidgetComponent {
-  constructor(private http: HttpClient) { }
-
+export class LdWidgetComponent implements OnChanges {
   @Input() sparqlTemplate = ``;
   @Input() endpoint = '';
-
+  @Input() buttonLabel: string | null = 'Search';
   result: string[] = [];
   error = '';
+
+  constructor(private http: HttpClient) { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['buttonLabel']) {
+      this.buttonLabel = changes['buttonLabel'].currentValue ?? 'Search';
+    }
+  }
+
 
   public sparqlVariableForm = new FormGroup({
     variable: new FormControl<string>('', Validators.required),

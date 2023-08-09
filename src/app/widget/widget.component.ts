@@ -20,7 +20,7 @@ export class WidgetComponent {
 
   sparqlQuery = '';
   endpoint = '';
-
+  buttonLabel: string | null = null;
 
   constructor(private route: ActivatedRoute) { }
 
@@ -29,7 +29,7 @@ export class WidgetComponent {
       this.error = null;
       this.endpoint = params.get('e') ?? '';
       this.sparqlQuery = params.get('q') ?? '';
-
+      this.buttonLabel = params.get('b') ?? null;
       if (this.endpoint.length < 1 || this.sparqlQuery.length < 1) {
         this.error = `Not enough information to proceed: ${this.endpoint.length === 0 ? '\nendpoint missing' : ''} ${this.sparqlQuery.length === 0 ? '\nsparql query missing' : ''}`;
       }
