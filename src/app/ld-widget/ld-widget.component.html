@@ -1,7 +1,7 @@
 <form [formGroup]="sparqlVariableForm" (ngSubmit)="onSubmit()">
   <label for="name"></label>
   <input id="name" type="text" formControlName="variable" style="margin-right: 4px" autocomplete="on" />
-  <button type="submit" [disabled]="!sparqlVariableForm.valid">Suche</button>
+  <button type="submit" [disabled]="!sparqlVariableForm.valid">{{buttonLabel}}</button>
 </form>
 <div *ngIf="error.length === 0">
   <p *ngFor="let line of result">{{ line }}</p>

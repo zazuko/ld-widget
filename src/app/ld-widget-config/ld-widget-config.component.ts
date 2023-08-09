@@ -16,6 +16,7 @@ import { isNgContainer } from '@angular/compiler';
 export class LdWidgetConfigComponent implements OnInit, OnDestroy, OnChanges {
   @Input() query = '';
   @Input() endpoint = '';
+  @Input() buttonLabel = '';
 
   ldWidgetUrl = window.location.href.split('?')[0]?.replace('config', '') ?? '';
   link = '';
@@ -23,7 +24,6 @@ export class LdWidgetConfigComponent implements OnInit, OnDestroy, OnChanges {
   sampleQuery = SAMPLE_SPARQL_QUERY;
   sampleEndpoint = SAMPLE_ENDPOINT;
   sampleValues = SAMPLE_VALUES;
-
   formControlNames: string[] = [];
 
   private destroy$ = new Subject<void>();
@@ -31,6 +31,7 @@ export class LdWidgetConfigComponent implements OnInit, OnDestroy, OnChanges {
   public widgetConfigForm = new FormGroup({
     endpoint: new FormControl<string>(this.endpoint, Validators.required),
     query: new FormControl<string>(this.query, Validators.required),
+    buttonLabel: new FormControl<string>(this.buttonLabel),
   });
 
   constructor() {
@@ -42,14 +43,21 @@ export class LdWidgetConfigComponent implements OnInit, OnDestroy, OnChanges {
       takeUntil(this.destroy$)).subscribe(fromValues => {
         const endpoint = fromValues.endpoint ?? '';
         const query = fromValues.query ?? '';
-        this._createLinkIfValid(endpoint, query);
+        const buttonLabel = fromValues.buttonLabel ?? '';
+        this._createLinkIfValid(endpoint, query, buttonLabel);
       })
   }
 
-  private _createLinkIfValid(endpoint: string, query: string) {
+  private _createLinkIfValid(endpoint: string, query: string, buttonLabel: string) {
     this.isLinkValid = this._checkIfLinkValid(endpoint, query);
     if (this.isLinkValid) {
-      this.link = `${this.ldWidgetUrl}?e=${encodeURIComponent(endpoint)}&q=${encodeURIComponent(query)}`;
+      let buttonQueryParam = '';
+      debugger
+      if (buttonLabel.length > 0) {
+        buttonQueryParam = `&b=${encodeURIComponent(buttonLabel)}`;
+      }
+
+      this.link = `${this.ldWidgetUrl}?e=${encodeURIComponent(endpoint)}&q=${encodeURIComponent(query)}${buttonQueryParam}`;
     } else {
       this.link = '';
     }
@@ -64,7 +72,7 @@ export class LdWidgetConfigComponent implements OnInit, OnDestroy, OnChanges {
       this.endpoint = changes['endpoint'].currentValue.trim();
       this.widgetConfigForm.get('endpoint')?.setValue(this.endpoint);
     }
-    this._createLinkIfValid(this.endpoint, this.query);
+    this._createLinkIfValid(this.endpoint, this.query, this.buttonLabel);
   }
 
   ngOnDestroy(): void {
@@ -93,19 +101,18 @@ export class LdWidgetConfigComponent implements OnInit, OnDestroy, OnChanges {
     return query.includes('?varBind');
   }
 }
-
-const SAMPLE_ENDPOINT = 'https://ld.zazuko.com/query/';
+const SAMPLE_ENDPOINT = 'https://lindas.admin.ch/query';
 const SAMPLE_SPARQL_QUERY = `
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?resultString FROM <https://lindas.admin.ch/fsvo/rabies> WHERE {
-  ?s <https://agriculture.ld.admin.ch/foen/rabies/identifier> ?varBind;
-     <https://agriculture.ld.admin.ch/foen/rabies/quantitativeresult> ?value ;
-     <https://agriculture.ld.admin.ch/foen/rabies/result> ?result ;
-     <https://agriculture.ld.admin.ch/foen/rabies/date> ?date;
-     <https://agriculture.ld.admin.ch/foen/rabies/unitcode> ?unit .
-     BIND ( IF ( ?result = <https://agriculture.ld.admin.ch/foen/rabies/dimension/result/positiv>, "Positive", "Negative" ) AS ?v )
-     BIND(CONCAT(?v, " | ",  "Quantitative Result: ", str(?value), " ", ?unit, " | ", str(?date))  AS ?resultString ) 
+  ?s <https://agriculture.ld.admin.ch/foen/rabies/dimension/identifier> ?varBind;
+  	 <https://agriculture.ld.admin.ch/foen/rabies/dimension/quantitativeresult> ?value ;
+     <https://agriculture.ld.admin.ch/foen/rabies/dimension/result> ?result ;
+     <https://agriculture.ld.admin.ch/foen/rabies/dimension/date> ?date;
+  	 <https://agriculture.ld.admin.ch/foen/rabies/dimension/unitcode> ?unit .
+     BIND ( IF ( ?result = <https://agriculture.ld.admin.ch/foen/rabies/dimension/result/positiv>, "Sufficient", "Insufficient" ) AS ?v )
+  	 BIND(CONCAT("Microchip number: ",?varBind, " | ", ?v, " | ",  "Quantitative Result: ", str(?value), " ", ?unit, " | Date of blood sampling: ", str(?date))  AS ?resultString ) 
 } ORDER BY ?date LIMIT 1
 `;
 
