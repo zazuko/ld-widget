@@ -1,6 +1,6 @@
-@if (error) {
-  <p>{{error}}</p>
+@if (error !== null) {
+<p>{{error}}</p>
 }
-@if (!error) {
-  <ld-widget [endpoint]="endpoint" [sparqlTemplate]="sparqlQuery" [buttonLabel]="buttonLabel"></ld-widget>
+@else {
+<ld-widget [endpoint]="endpoint" [sparqlTemplate]="sparqlQuery" [buttonLabel]="buttonLabel"></ld-widget>
 }
