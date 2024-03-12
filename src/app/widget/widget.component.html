@@ -1,2 +1,6 @@
-<p *ngIf="error">{{error}}</p>
-<ld-widget *ngIf="!error" [endpoint]="endpoint" [sparqlTemplate]="sparqlQuery" [buttonLabel]="buttonLabel"></ld-widget>
+@if (error !== null) {
+<p>{{error}}</p>
+}
+@else {
+<ld-widget [endpoint]="endpoint" [sparqlTemplate]="sparqlQuery" [buttonLabel]="buttonLabel"></ld-widget>
+}

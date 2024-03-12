@@ -1,48 +1,52 @@
 <h1>Linked Data Widget: Link Configurator</h1>
 <div>
-    <p>Test link</p>
-    <div *ngIf="isLinkValid">
-        <a [href]="link" target="_blank">{{link}}</a>
+  <p>Test link</p>
+  @if (isLinkValid) {
+    <div>
+      <a [href]="link" target="_blank">{{link}}</a>
     </div>
-    <div *ngIf="!isLinkValid">
-        <p>{{link}}</p>
+  }
+  @if (!isLinkValid) {
+    <div>
+      <p>{{link}}</p>
     </div>
+  }
 </div>
 <br>
-<br>
-<form [formGroup]="widgetConfigForm">
-    <div>
+  <br>
+    <form [formGroup]="widgetConfigForm">
+      <div>
         <label for="endpoint">SPARQL Endpoint</label>
         <input id="endpoint" type="text" formControlName="endpoint" style="margin-right: 4px" />
-    </div>
-    <div>
+      </div>
+      <div>
         <label for="query">SPARQL Query</label>
         <textarea id="query" rows="30" cols="150" formControlName="query" style="margin-right: 4px"></textarea>
-    </div>
-    <div>
+      </div>
+      <div>
         <label for="query">Button Label (optional)</label>
         <input id="query" formControlName="buttonLabel" style="margin-right: 4px" />
+      </div>
+
+    </form>
+
+
+    <div>
+      <h2>Sample</h2>
+      <h3>Sample Endpoint</h3>
+      <pre>{{sampleEndpoint}}</pre>
+      <h3>Sample query</h3>
+      <pre>{{sampleQuery}}</pre>
     </div>
 
-</form>
 
-
-<div>
-    <h2>Sample</h2>
-    <h3>Sample Endpoint</h3>
-    <pre>{{sampleEndpoint}}</pre>
-    <h3>Sample query</h3>
-    <pre>{{sampleQuery}}</pre>
-</div>
-
-
-<div>
-    <h2>How does that work?</h2>
-    <p>
+    <div>
+      <h2>How does that work?</h2>
+      <p>
         The important variable is <span style="color: red;">?varBind</span>. The widget will show an input asking for a
         value. The variable <span style="color: red;">?varBind</span> will be bound the the value of this input filed.
         It will just append a VALUES expression to the SPARQL Query. Imagine your input is <span
-            style="color: red;">'990000002998969'</span> this will lead to the following query.
+      style="color: red;">'990000002998969'</span> this will lead to the following query.
     </p>
     <pre>{{sampleQuery}}{{sampleValues}}</pre>
-</div>
+  </div>

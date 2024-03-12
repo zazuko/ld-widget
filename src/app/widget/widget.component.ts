@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgIf } from '@angular/common';
+
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { LdWidgetComponent } from '../ld-widget/ld-widget.component';
 
@@ -10,7 +10,7 @@ import { LdWidgetComponent } from '../ld-widget/ld-widget.component';
  */
 @Component({
   standalone: true,
-  imports: [RouterModule, NgIf, LdWidgetComponent],
+  imports: [RouterModule, LdWidgetComponent],
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss']
 })

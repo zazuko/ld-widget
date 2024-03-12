@@ -3,12 +3,20 @@
   <input id="name" type="text" formControlName="variable" style="margin-right: 4px" autocomplete="on" />
   <button type="submit" [disabled]="!sparqlVariableForm.valid">{{buttonLabel}}</button>
 </form>
-<div *ngIf="error.length === 0">
-  <p *ngFor="let line of result">{{ line }}</p>
-  <p *ngIf="result.length === 0">0 results</p>
-</div>
+@if (error.length === 0) {
+  <div>
+    @for (line of result; track line) {
+      <p>{{ line }}</p>
+    }
+    @if (result.length === 0) {
+      <p>0 results</p>
+    }
+  </div>
+}
 
-<div *ngIf="error.length > 0" style="color: red">
-  <h4>Http Response Error</h4>
-  <pre>{{ error }}</pre>
-</div>
+@if (error.length > 0) {
+  <div style="color: red">
+    <h4>Http Response Error</h4>
+    <pre>{{ error }}</pre>
+  </div>
+}

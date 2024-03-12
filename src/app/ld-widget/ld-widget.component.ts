@@ -2,14 +2,14 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { HttpClient, HttpClientModule, HttpHeaders, HttpParams } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
-import { NgIf, NgFor } from '@angular/common';
+
 import { SafeValue } from '@angular/platform-browser';
 
 interface SafeSparqlValue extends SafeValue { }
 
 @Component({
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, HttpClientModule, NgIf, NgFor],
+  imports: [FormsModule, ReactiveFormsModule, HttpClientModule],
   selector: 'ld-widget',
   templateUrl: './ld-widget.component.html',
   styleUrls: ['ld-widget.component.scss'],
