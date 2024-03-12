@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { filter, Subject, takeUntil } from 'rxjs';
@@ -9,7 +9,7 @@ import { isNgContainer } from '@angular/compiler';
 @Component({
   selector: 'app-ld-widget-config',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, HttpClientModule, NgIf, NgFor],
+  imports: [FormsModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './ld-widget-config.component.html',
   styleUrls: ['./ld-widget-config.component.scss']
 })
