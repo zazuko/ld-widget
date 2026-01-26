@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { HttpClient, HttpClientModule, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
@@ -9,7 +9,11 @@ interface SafeSparqlValue extends SafeValue { }
 
 @Component({
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, HttpClientModule],
+  imports: [FormsModule, ReactiveFormsModule, 
+// TODO: `HttpClientModule` should not be imported into a component directly.
+// Please refactor the code to add `provideHttpClient()` call to the provider list in the
+// application bootstrap logic and remove the `HttpClientModule` import from this component.
+HttpClientModule],
   selector: 'ld-widget',
   templateUrl: './ld-widget.component.html',
   styleUrls: ['ld-widget.component.scss'],

@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import {} from '@angular/common/http';
 import { filter, Subject, takeUntil } from 'rxjs';
 import { UrlSegment } from '@angular/router';
 import { isNgContainer } from '@angular/compiler';
@@ -9,7 +9,11 @@ import { isNgContainer } from '@angular/compiler';
 @Component({
   selector: 'app-ld-widget-config',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, HttpClientModule],
+  imports: [FormsModule, ReactiveFormsModule, 
+// TODO: `HttpClientModule` should not be imported into a component directly.
+// Please refactor the code to add `provideHttpClient()` call to the provider list in the
+// application bootstrap logic and remove the `HttpClientModule` import from this component.
+HttpClientModule],
   templateUrl: './ld-widget-config.component.html',
   styleUrls: ['./ld-widget-config.component.scss']
 })
