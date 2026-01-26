@@ -1,4 +1,4 @@
-import { importProvidersFrom } from '@angular/core';
+import { importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { 
     provideRouter,
@@ -10,7 +10,7 @@ import { APP_ROUTES } from './app/app.routes';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    importProvidersFrom(),
+    provideZoneChangeDetection(),importProvidersFrom(),
     provideRouter(APP_ROUTES)
   ]
 });

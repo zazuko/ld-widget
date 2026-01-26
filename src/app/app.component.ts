@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, provideZoneChangeDetection } from '@angular/core';
 import { bootstrapApplication,  } from '@angular/platform-browser';
 import { RouterOutlet } from '@angular/router';
 
@@ -13,4 +13,4 @@ import { RouterOutlet } from '@angular/router';
 export class AppComponent {
 }
 
-bootstrapApplication(AppComponent);
+bootstrapApplication(AppComponent, {providers: [provideZoneChangeDetection()]});
