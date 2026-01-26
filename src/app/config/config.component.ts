@@ -3,10 +3,9 @@ import { LdWidgetConfigComponent } from '../ld-widget-config/ld-widget-config.co
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 @Component({
-  standalone: true,
-  imports: [LdWidgetConfigComponent, RouterModule],
-  templateUrl: './config.component.html',
-  styleUrls: ['./config.component.scss']
+    imports: [LdWidgetConfigComponent, RouterModule],
+    templateUrl: './config.component.html',
+    styleUrls: ['./config.component.scss']
 })
 export class ConfigComponent implements OnInit {
 

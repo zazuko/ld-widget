@@ -9,10 +9,9 @@ import { LdWidgetComponent } from '../ld-widget/ld-widget.component';
  * This is a Smart Component. It handles router input and errors for errors.
  */
 @Component({
-  standalone: true,
-  imports: [RouterModule, LdWidgetComponent],
-  templateUrl: './widget.component.html',
-  styleUrls: ['./widget.component.scss']
+    imports: [RouterModule, LdWidgetComponent],
+    templateUrl: './widget.component.html',
+    styleUrls: ['./widget.component.scss']
 })
 export class WidgetComponent {
 

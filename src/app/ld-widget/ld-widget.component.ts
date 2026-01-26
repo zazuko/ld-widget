@@ -8,15 +8,14 @@ import { SafeValue } from '@angular/platform-browser';
 interface SafeSparqlValue extends SafeValue { }
 
 @Component({
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, 
-// TODO: `HttpClientModule` should not be imported into a component directly.
-// Please refactor the code to add `provideHttpClient()` call to the provider list in the
-// application bootstrap logic and remove the `HttpClientModule` import from this component.
-HttpClientModule],
-  selector: 'ld-widget',
-  templateUrl: './ld-widget.component.html',
-  styleUrls: ['ld-widget.component.scss'],
+    imports: [FormsModule, ReactiveFormsModule,
+        // TODO: `HttpClientModule` should not be imported into a component directly.
+        // Please refactor the code to add `provideHttpClient()` call to the provider list in the
+        // application bootstrap logic and remove the `HttpClientModule` import from this component.
+        HttpClientModule],
+    selector: 'ld-widget',
+    templateUrl: './ld-widget.component.html',
+    styleUrls: ['ld-widget.component.scss']
 })
 export class LdWidgetComponent implements OnChanges {
   @Input() sparqlTemplate = ``;
