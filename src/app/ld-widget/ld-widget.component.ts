@@ -1,5 +1,5 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { HttpClient, HttpClientModule, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Component, inject, input, signal } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
@@ -8,26 +8,21 @@ import { SafeValue } from '@angular/platform-browser';
 interface SafeSparqlValue extends SafeValue { }
 
 @Component({
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, HttpClientModule],
+  imports: [FormsModule, ReactiveFormsModule],
   selector: 'ld-widget',
   templateUrl: './ld-widget.component.html',
-  styleUrls: ['ld-widget.component.scss'],
+  styleUrls: ['ld-widget.component.scss']
 })
-export class LdWidgetComponent implements OnChanges {
-  @Input() sparqlTemplate = ``;
-  @Input() endpoint = '';
-  @Input() buttonLabel: string | null = 'Search';
-  result: string[] = [];
-  error = '';
+export class LdWidgetComponent {
+  sparqlTemplate = input.required<string>();
+  endpoint = input.required<string>();
+  buttonLabel = input<string | undefined | null>('Search');
 
-  constructor(private http: HttpClient) { }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['buttonLabel']) {
-      this.buttonLabel = changes['buttonLabel'].currentValue ?? 'Search';
-    }
-  }
+  result = signal<string[]>([]);
+  error = signal<string>('');
+
+  #http = inject(HttpClient);
 
 
   public sparqlVariableForm = new FormGroup({
@@ -47,17 +42,17 @@ export class LdWidgetComponent implements OnChanges {
   }
 
   private _executeQuery(variable: SafeSparqlValue) {
-    if (!this.endpoint || this.endpoint.length === 0) {
-      console.error('Endpoint is invalid', this.endpoint);
+    if (!this.endpoint() || this.endpoint().length === 0) {
+      console.error('Endpoint is invalid', this.endpoint());
       return;
     }
-    if (!this.sparqlTemplate || this.sparqlTemplate.length === 0) {
-      console.error('SPARQL Template is invalid', this.sparqlTemplate);
+    if (!this.sparqlTemplate() || this.sparqlTemplate().length === 0) {
+      console.error('SPARQL Template is invalid', this.sparqlTemplate());
       return;
     }
 
     const query = `
-    ${this.sparqlTemplate}
+    ${this.sparqlTemplate()}
     ${this.getValues(variable)}
 `;
 
@@ -67,10 +62,10 @@ export class LdWidgetComponent implements OnChanges {
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('Accept', 'application/sparql-results+json');
 
-    this.error = '';
+    this.error.set('');
 
-    this.http
-      .post<ResultTable>(this.endpoint, body.toString(), {
+    this.#http
+      .post<ResultTable>(this.endpoint(), body.toString(), {
         headers,
         observe: 'response',
       })
@@ -79,8 +74,8 @@ export class LdWidgetComponent implements OnChanges {
           const contentType = response.headers.get('Content-Type');
           if (!contentType?.startsWith('application/sparql-results+json')) {
             // this can happen because stardog is returning a http 200 ok on sparql error
-            this.result = [];
-            this.error = JSON.stringify(response, null, 4);
+            this.result.set([]);
+            this.error.set(JSON.stringify(response, null, 4));
             return;
           }
 
@@ -94,12 +89,12 @@ export class LdWidgetComponent implements OnChanges {
               });
               return row;
             }) ?? [];
-          this.result = table.map((row) => row.join(' '));
+          this.result.set(table.map((row) => row.join(' ')));
         },
         error: (error) => {
           // this can happen because stardog is returning a http 200 ok on sparql error
-          this.result = [];
-          this.error = JSON.stringify(error, null, 4);
+          this.result.set([]);
+          this.error.set(JSON.stringify(error, null, 4));
         }
       }
       );

@@ -1,37 +1,37 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-
+import { Component, OnChanges, OnInit, input, SimpleChanges, linkedSignal, computed, inject, DestroyRef } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { filter, Subject, takeUntil } from 'rxjs';
-import { UrlSegment } from '@angular/router';
-import { isNgContainer } from '@angular/compiler';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-ld-widget-config',
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, HttpClientModule],
+  imports: [FormsModule, ReactiveFormsModule],
   templateUrl: './ld-widget-config.component.html',
   styleUrls: ['./ld-widget-config.component.scss']
 })
-export class LdWidgetConfigComponent implements OnInit, OnDestroy, OnChanges {
-  @Input() query = '';
-  @Input() endpoint = '';
-  @Input() buttonLabel = '';
+export class LdWidgetConfigComponent implements OnInit, OnChanges {
+  query = input('');
+  endpoint = input('');
+  buttonLabel = input('');
+
+  queryValue = linkedSignal(this.query);
+  endpointValue = linkedSignal(this.endpoint);
+  buttonLabelValue = linkedSignal(this.buttonLabel);
+
 
   ldWidgetUrl = window.location.href.split('?')[0]?.replace('config', '') ?? '';
-  link = '';
-  isLinkValid = false;
+
   sampleQuery = SAMPLE_SPARQL_QUERY;
   sampleEndpoint = SAMPLE_ENDPOINT;
   sampleValues = SAMPLE_VALUES;
+
   formControlNames: string[] = [];
 
-  private destroy$ = new Subject<void>();
+  #destroyRef = inject(DestroyRef);
 
-  public widgetConfigForm = new FormGroup({
-    endpoint: new FormControl<string>(this.endpoint, Validators.required),
-    query: new FormControl<string>(this.query, Validators.required),
-    buttonLabel: new FormControl<string>(this.buttonLabel),
+  widgetConfigForm = new FormGroup({
+    endpoint: new FormControl<string>(this.endpointValue(), Validators.required),
+    query: new FormControl<string>(this.queryValue(), Validators.required),
+    buttonLabel: new FormControl<string>(this.buttonLabelValue()),
   });
 
   constructor() {
@@ -40,67 +40,92 @@ export class LdWidgetConfigComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit(): void {
     this.widgetConfigForm.valueChanges.pipe(
-      takeUntil(this.destroy$)).subscribe(fromValues => {
-        const endpoint = fromValues.endpoint ?? '';
-        const query = fromValues.query ?? '';
-        const buttonLabel = fromValues.buttonLabel ?? '';
-        this._createLinkIfValid(endpoint, query, buttonLabel);
-      })
+      takeUntilDestroyed(this.#destroyRef)
+    ).subscribe(fromValues => {
+      const endpoint = fromValues.endpoint ?? '';
+      const query = fromValues.query ?? '';
+      const buttonLabel = fromValues.buttonLabel ?? '';
+      this.endpointValue.set(endpoint.trim());
+      this.queryValue.set(query.trim());
+      this.buttonLabelValue.set(buttonLabel.trim());
+    })
   }
 
-  private _createLinkIfValid(endpoint: string, query: string, buttonLabel: string) {
-    this.isLinkValid = this._checkIfLinkValid(endpoint, query);
-    if (this.isLinkValid) {
-      let buttonQueryParam = '';
-      debugger
-      if (buttonLabel.length > 0) {
-        buttonQueryParam = `&b=${encodeURIComponent(buttonLabel)}`;
-      }
-
-      this.link = `${this.ldWidgetUrl}?e=${encodeURIComponent(endpoint)}&q=${encodeURIComponent(query)}${buttonQueryParam}`;
-    } else {
-      this.link = '';
+  computedLink = computed<string>(() => {
+    if (!this.computedIsLinkValid()) {
+      return '';
     }
-  }
+
+    const buttonLabel = this.buttonLabelValue().length > 0 ? `&b=${encodeURIComponent(this.buttonLabelValue())}` : '';
+
+    return `${this.ldWidgetUrl}?e=${encodeURIComponent(this.endpointValue())}&q=${encodeURIComponent(this.queryValue())}${buttonLabel}`;
+  });
+
+
+  computedIsLinkValid = computed<boolean>(() => {
+    const endpointError = this.endpointErrorMessage();
+    const queryError = this.queryErrorMessage();
+    if (endpointError.length > 0) {
+      return false;
+    }
+    if (queryError.length > 0) {
+      return false;
+    }
+    return true;
+  });
+
+
+  endpointErrorMessage = computed<string>(() => {
+    const endpoint = this.endpointValue();
+    if (endpoint.length === 0) {
+      return 'Endpoint is required';
+    }
+
+    try {
+      const url = new URL(endpoint);
+      if (url.protocol === "http:" || url.protocol === "https:") {
+        return '';
+      }
+      return 'Endpoint must be a valid HTTP(s) URL';
+    } catch (_) {
+      return 'Endpoint must be a valid URL';
+    }
+  });
+
+  queryErrorMessage = computed<string>(() => {
+    const query = this.queryValue();
+    if (query.length === 0) {
+      return 'SPARQL Query is required';
+    }
+    if (!query.includes('?varBind')) {
+      return 'SPARQL Query must contain the ?varBind variable in a VALUES clause';
+    }
+    return '';
+  });
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['query']?.currentValue) {
-      this.query = changes['query']?.currentValue.trim();
-      this.widgetConfigForm.get('query')?.setValue(this.query);
+      this.queryValue.set(changes['query']?.currentValue.trim());
+      this.widgetConfigForm.get('query')?.setValue(this.queryValue());
     }
     if (changes['endpoint']?.currentValue) {
-      this.endpoint = changes['endpoint'].currentValue.trim();
-      this.widgetConfigForm.get('endpoint')?.setValue(this.endpoint);
+      this.endpointValue.set(changes['endpoint']?.currentValue.trim());
+      this.widgetConfigForm.get('endpoint')?.setValue(this.endpointValue());
     }
-    this._createLinkIfValid(this.endpoint, this.query, this.buttonLabel);
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-
-
-  private _checkIfLinkValid(endpoint: string, query: string): boolean {
-    return (this._checkEndpoint(endpoint) && this._checkQuery(query));
-  }
-
-  private _checkEndpoint(endpoint: string): boolean {
-    let url;
-    try {
-      url = new URL(endpoint);
-    } catch (_) {
-      return false;
+    if (changes['buttonLabel']?.currentValue) {
+      this.buttonLabelValue.set(changes['buttonLabel']?.currentValue.trim());
+      this.widgetConfigForm.get('buttonLabel')?.setValue(this.buttonLabelValue());
     }
-    return url.protocol === "http:" || url.protocol === "https:";
   }
 
 
-  private _checkQuery(query: string): boolean {
-    return query.includes('?varBind');
-  }
 }
+
+
+
+
+
+
 const SAMPLE_ENDPOINT = 'https://lindas.admin.ch/query';
 const SAMPLE_SPARQL_QUERY = `
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>

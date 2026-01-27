@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { LdWidgetComponent } from '../ld-widget/ld-widget.component';
@@ -9,7 +9,6 @@ import { LdWidgetComponent } from '../ld-widget/ld-widget.component';
  * This is a Smart Component. It handles router input and errors for errors.
  */
 @Component({
-  standalone: true,
   imports: [RouterModule, LdWidgetComponent],
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss']
@@ -20,12 +19,12 @@ export class WidgetComponent {
 
   sparqlQuery = '';
   endpoint = '';
-  buttonLabel: string | null = null;
+  buttonLabel: string | undefined | null = undefined;
 
-  constructor(private route: ActivatedRoute) { }
+  #activatedRoute = inject(ActivatedRoute);
 
   ngOnInit(): void {
-    this.route.queryParamMap.subscribe((params) => {
+    this.#activatedRoute.queryParamMap.subscribe((params) => {
       this.error = null;
       this.endpoint = params.get('e') ?? '';
       this.sparqlQuery = params.get('q') ?? '';
