@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
@@ -8,29 +8,19 @@ import { SafeValue } from '@angular/platform-browser';
 interface SafeSparqlValue extends SafeValue { }
 
 @Component({
-    imports: [FormsModule, ReactiveFormsModule,
-        // TODO: `HttpClientModule` should not be imported into a component directly.
-        // Please refactor the code to add `provideHttpClient()` call to the provider list in the
-        // application bootstrap logic and remove the `HttpClientModule` import from this component.
-        HttpClientModule],
-    selector: 'ld-widget',
-    templateUrl: './ld-widget.component.html',
-    styleUrls: ['ld-widget.component.scss']
+  imports: [FormsModule, ReactiveFormsModule],
+  selector: 'ld-widget',
+  templateUrl: './ld-widget.component.html',
+  styleUrls: ['ld-widget.component.scss']
 })
-export class LdWidgetComponent implements OnChanges {
-  @Input() sparqlTemplate = ``;
-  @Input() endpoint = '';
-  @Input() buttonLabel: string | null = 'Search';
+export class LdWidgetComponent {
+  sparqlTemplate = input.required<string>();
+  endpoint = input.required<string>();
+  buttonLabel = input<string | undefined | null>('Search');
   result: string[] = [];
   error = '';
 
-  constructor(private http: HttpClient) { }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['buttonLabel']) {
-      this.buttonLabel = changes['buttonLabel'].currentValue ?? 'Search';
-    }
-  }
+  #http = inject(HttpClient);
 
 
   public sparqlVariableForm = new FormGroup({
@@ -50,17 +40,17 @@ export class LdWidgetComponent implements OnChanges {
   }
 
   private _executeQuery(variable: SafeSparqlValue) {
-    if (!this.endpoint || this.endpoint.length === 0) {
-      console.error('Endpoint is invalid', this.endpoint);
+    if (!this.endpoint() || this.endpoint().length === 0) {
+      console.error('Endpoint is invalid', this.endpoint());
       return;
     }
-    if (!this.sparqlTemplate || this.sparqlTemplate.length === 0) {
-      console.error('SPARQL Template is invalid', this.sparqlTemplate);
+    if (!this.sparqlTemplate() || this.sparqlTemplate().length === 0) {
+      console.error('SPARQL Template is invalid', this.sparqlTemplate());
       return;
     }
 
     const query = `
-    ${this.sparqlTemplate}
+    ${this.sparqlTemplate()}
     ${this.getValues(variable)}
 `;
 
@@ -72,8 +62,8 @@ export class LdWidgetComponent implements OnChanges {
 
     this.error = '';
 
-    this.http
-      .post<ResultTable>(this.endpoint, body.toString(), {
+    this.#http
+      .post<ResultTable>(this.endpoint(), body.toString(), {
         headers,
         observe: 'response',
       })

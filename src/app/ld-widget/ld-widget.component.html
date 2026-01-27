@@ -1,22 +1,29 @@
 <form [formGroup]="sparqlVariableForm" (ngSubmit)="onSubmit()">
   <label for="name"></label>
-  <input id="name" type="text" formControlName="variable" style="margin-right: 4px" autocomplete="on" />
-  <button type="submit" [disabled]="!sparqlVariableForm.valid">{{buttonLabel}}</button>
+  <input id="name" type="text" formControlName="variable" style="margin-right: 16px; width: unset" autocomplete="on"
+    tabindex="1" class="input--outline input--base" />
+  <button type="submit" class="btn--outline btn" [disabled]="!sparqlVariableForm.valid" tabindex="2">
+    <span class="btn__text">
+      {{buttonLabel() ??
+      'Search'}}
+    </span>
+  </button>
 </form>
+<br />
 @if (error.length === 0) {
-  <div>
-    @for (line of result; track line) {
-      <p>{{ line }}</p>
-    }
-    @if (result.length === 0) {
-      <p>0 results</p>
-    }
-  </div>
+<div>
+  @for (line of result; track line) {
+  <p>{{ line }}</p>
+  }
+  @if (result.length === 0) {
+  <p>0 results</p>
+  }
+</div>
 }
 
 @if (error.length > 0) {
-  <div style="color: red">
-    <h4>Http Response Error</h4>
-    <pre>{{ error }}</pre>
-  </div>
+<div style="color: red">
+  <h4>Http Response Error</h4>
+  <pre>{{ error }}</pre>
+</div>
 }

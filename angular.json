@@ -32,7 +32,8 @@
               "src/example.html"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/swiss.css"
             ],
             "scripts": [],
             "browser": "src/main.ts"
