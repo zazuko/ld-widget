@@ -32,10 +32,10 @@ jobs:
         run: echo ld-widget.zazuko.com > dist/ld-widget/CNAME
 
       - name: Configure 404 page
-        run: cp dist/ld-widget/index.html dist/ld-widget/404.html
+        run: cp dist/ld-widget/browser/index.html dist/ld-widget/browser/404.html
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: dist/ld-widget
+          folder: dist/ld-widget/browser

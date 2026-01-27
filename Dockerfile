@@ -16,6 +16,6 @@ RUN npm run build
 FROM docker.io/library/nginx:1.23-alpine
 
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder /app/dist/ld-widget /usr/share/nginx/html
+COPY --from=builder /app/dist/ld-widget/browser /usr/share/nginx/html
 
 EXPOSE 8080
