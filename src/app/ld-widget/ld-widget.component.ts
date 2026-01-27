@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
@@ -17,8 +17,10 @@ export class LdWidgetComponent {
   sparqlTemplate = input.required<string>();
   endpoint = input.required<string>();
   buttonLabel = input<string | undefined | null>('Search');
-  result: string[] = [];
-  error = '';
+
+
+  result = signal<string[]>([]);
+  error = signal<string>('');
 
   #http = inject(HttpClient);
 
@@ -60,7 +62,7 @@ export class LdWidgetComponent {
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('Accept', 'application/sparql-results+json');
 
-    this.error = '';
+    this.error.set('');
 
     this.#http
       .post<ResultTable>(this.endpoint(), body.toString(), {
@@ -72,8 +74,8 @@ export class LdWidgetComponent {
           const contentType = response.headers.get('Content-Type');
           if (!contentType?.startsWith('application/sparql-results+json')) {
             // this can happen because stardog is returning a http 200 ok on sparql error
-            this.result = [];
-            this.error = JSON.stringify(response, null, 4);
+            this.result.set([]);
+            this.error.set(JSON.stringify(response, null, 4));
             return;
           }
 
@@ -87,12 +89,12 @@ export class LdWidgetComponent {
               });
               return row;
             }) ?? [];
-          this.result = table.map((row) => row.join(' '));
+          this.result.set(table.map((row) => row.join(' ')));
         },
         error: (error) => {
           // this can happen because stardog is returning a http 200 ok on sparql error
-          this.result = [];
-          this.error = JSON.stringify(error, null, 4);
+          this.result.set([]);
+          this.error.set(JSON.stringify(error, null, 4));
         }
       }
       );
